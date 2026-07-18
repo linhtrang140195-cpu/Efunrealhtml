@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Efun">
+<meta name="theme-color" content="#5C7A5C">
+<title>Efun 🐱</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#EDE8DF;font-family:'Nunito',sans-serif;max-width:430px;margin:0 auto;min-height:100vh}
+::-webkit-scrollbar{display:none}
+.screen{display:none;min-height:100vh;padding-bottom:80px}
+.screen.active{display:block}
+.header{padding:52px 20px 20px;color:white;position:relative;overflow:hidden}
+.header.green{background:#5C7A5C}
+.header.terra{background:#B5624A}
+.header.purple{background:#6A5A8A}
+.header.blue{background:#4A6880}
+.header h1{font-size:22px;font-weight:900;margin-top:4px}
+.header p{font-size:12px;opacity:0.8;margin-top:2px}
+.header-label{font-size:11px;font-weight:700;opacity:0.75;letter-spacing:1px;text-transform:uppercase}
+.content{padding:16px}
+.card{background:white;border-radius:18px;padding:14px;margin-bottom:12px;border:1px solid #D8D0C0}
+.btn{border:none;border-radius:16px;padding:14px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;width:100%;display:block}
+.btn-green{background:#5C7A5C;color:white}
+.btn-terra{background:#B5624A;color:white}
+.btn-blue{background:#4A6880;color:white}
+.stat-pill{background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:700;display:inline-block;margin:2px}
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:white;border-top:1px solid #D8D0C0;display:flex;justify-content:space-around;padding:8px 0 22px;z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;font-weight:800;color:#7A7060;cursor:pointer;padding:2px 8px}
+.nav-item.active{color:#5C7A5C}
+.nav-icon{font-size:20px}
+/* Cat CSS */
+.cat-wrap{display:flex;flex-direction:column;align-items:center}
+.cat-body{position:relative;width:64px;height:80px}
+.cat-ear-l,.cat-ear-r{position:absolute;top:-10px;width:18px;height:18px;border-radius:50% 50% 30% 30%;filter:brightness(0.88)}
+.cat-ear-l{left:7px}.cat-ear-r{right:7px}
+.cat-main{position:absolute;inset:0;border-radius:32px 32px 22px 22px;box-shadow:2px 4px 10px rgba(44,36,22,0.18);overflow:hidden}
+.cat-face{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:46px;height:38px;border-radius:50%;filter:brightness(1.1)}
+.cat-outfit{position:absolute;bottom:0;left:0;right:0;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.cat-arm-l{position:absolute;bottom:18px;left:-12px;width:14px;height:26px;border-radius:10px}
+.cat-arm-r{position:absolute;bottom:18px;right:-12px;width:14px;height:26px;border-radius:10px}
+.cat-leg-l{position:absolute;bottom:-9px;left:11px;width:16px;height:16px;border-radius:0 0 9px 9px;filter:brightness(0.9)}
+.cat-leg-r{position:absolute;bottom:-9px;right:11px;width:16px;height:16px;border-radius:0 0 9px 9px;filter:brightness(0.9)}
+.cat-shadow{width:44px;height:5px;border-radius:50%;opacity:0.08;margin:4px auto 0;background:#2C2416}
+/* Flashcard */
+.flashcard{background:white;border-radius:24px;padding:28px 20px;text-align:center;border:1.5px solid #D8D0C0;cursor:pointer;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* Chat */
+.msg-ai{background:white;border:1px solid #D8D0C0;border-radius:18px 18px 18px 4px;padding:10px 14px;font-size:13px;line-height:1.6;color:#2C2416;font-weight:600;max-width:78%;margin-bottom:10px}
+.msg-user{background:#4A6880;color:white;border-radius:18px 18px 4px 18px;padding:10px 14px;font-size:13px;line-height:1.6;font-weight:600;max-width:78%;margin-bottom:10px;margin-left:auto}
+.correction{background:#F5EDD0;border-radius:8px;padding:5px 8px;margin-top:6px;font-size:12px;color:#7A5A10;font-weight:700}
+.chat-input-bar{position:fixed;bottom:66px;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:white;border-top:1px solid #D8D0C0;padding:10px 14px;display:flex;gap:8px;align-items:center;z-index:99}
+.chat-input{flex:1;background:#EDE8DF;border:1.5px solid #D8D0C0;border-radius:20px;padding:10px 16px;font-size:14px;font-family:'Nunito',sans-serif;outline:none;color:#2C2416}
+.send-btn{width:40px;height:40px;background:#4A6880;border:none;border-radius:50%;color:white;font-size:16px;cursor:pointer;flex-shrink:0}
+/* Topic chips */
+.chips{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;scrollbar-width:none}
+.chip{background:white;border:1.5px solid #D8D0C0;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:#7A7060;white-space:nowrap;cursor:pointer;font-family:'Nunito',sans-serif}
+.chip.active{background:#6A5A8A;border-color:#6A5A8A;color:white}
+/* Mic */
+.mic-btn{width:76px;height:76px;border:none;border-radius:50%;font-size:30px;cursor:pointer;display:block;margin:0 auto}
+/* Toast */
+#toast{position:fixed;top:56px;left:50%;transform:translateX(-50%);background:#2C2416;color:white;border-radius:20px;padding:9px 20px;font-weight:800;font-size:13px;z-index:999;display:none}
+/* XP bar */
+.xp-bar{height:8px;background:#D8D0C0;border-radius:8px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,#5C7A5C,#C4A040);border-radius:8px;transition:width 0.6s}
+/* Badges */
+.badge-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.badge{background:#F0EDE4;border-radius:16px;padding:12px;text-align:center;opacity:0.45}
+.badge.done{background:white;border:1px solid #D8D0C0;opacity:1}
+/* Level map */
+.level-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.level-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:white;flex-shrink:0}
+/* Loading dots */
+.dots span{display:inline-block;width:7px;height:7px;background:#7A7060;border-radius:50%;margin:0 2px;animation:bounce 1s infinite;opacity:0.5}
+.dots span:nth-child(2){animation-delay:0.15s}
+.dots span:nth-child(3){animation-delay:0.3s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:0.4}40%{transform:translateY(-5px);opacity:1}}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- SPLASH -->
+<div id="splash" class="screen active" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh">
+  <div id="splash-cat"></div>
+  <div style="margin-top:24px;font-size:36px;font-weight:900;color:#2C2416;letter-spacing:-1px">efun</div>
+  <div style="font-size:13px;color:#7A7060;font-weight:600;margin-top:4px">học tiếng anh theo cách của bạn 🌿</div>
+</div>
+
+<!-- ONBOARD -->
+<div id="onboard" class="screen" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:28px">
+  <div style="font-size:11px;font-weight:700;color:#7A7060;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Chào mừng</div>
+  <div style="font-size:28px;font-weight:900;color:#2C2416;text-align:center;line-height:1.2;margin-bottom:6px">Linh Trang Bông 🌿</div>
+  <div style="font-size:13px;color:#7A7060;text-align:center;margin-bottom:32px;font-weight:600;line-height:1.7">Học tiếng Anh qua giao tiếp thật,<br>nhập vai, sửa lỗi tự nhiên.</div>
+  <div style="display:flex;gap:20px;margin-bottom:36px" id="onboard-cats"></div>
+  <button class="btn btn-green" onclick="showScreen('test')">Test trình độ · 10 câu · CEFR 🐱</button>
+</div>
+
+<!-- TEST -->
+<div id="test" class="screen" style="display:none">
+  <div class="header green">
+    <div class="header-label" id="test-type">Từ vựng · A2</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+      <div style="font-size:13px;font-weight:700;opacity:0.8" id="test-counter">1/10</div>
+    </div>
+    <div style="height:6px;background:rgba(255,255,255,0.25);border-radius:6px;margin-top:8px">
+      <div id="test-progress" style="height:100%;background:white;border-radius:6px;width:0%;transition:width 0.3s"></div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="card" style="margin-bottom:16px">
+      <div style="font-size:15px;font-weight:800;color:#2C2416;line-height:1.5" id="test-q"></div>
+    </div>
+    <div id="test-opts"></div>
+  </div>
+</div>
+
+<!-- TEST RESULT -->
+<div id="test-result" class="screen" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:28px">
+  <div id="result-cat"></div>
+  <div style="margin-top:20px;font-size:22px;font-weight:900;color:#2C2416">Kết quả của Trang</div>
+  <div id="result-score" style="font-size:52px;font-weight:900;color:#5C7A5C;margin:8px 0"></div>
+  <div id="result-level" style="background:#5C7A5C;color:white;border-radius:14px;padding:6px 24px;font-size:22px;font-weight:900;margin-bottom:16px"></div>
+  <div class="card" style="text-align:center;width:100%;margin-bottom:24px">
+    <div id="result-msg" style="font-size:13px;color:#7A7060;line-height:1.7;font-weight:600"></div>
+  </div>
+  <button class="btn btn-green" onclick="finishTest()">Vào học thôi! 🐱</button>
+</div>
+
+<!-- HOME -->
+<div id="home" class="screen" style="display:none">
+  <div class="header green">
+    <div style="position:absolute;bottom:-8px;right:16px" id="home-cat"></div>
+    <div class="header-label">CHÀO BUỔI SÁNG 🌿</div>
+    <div style="font-size:24px;font-weight:900;margin-bottom:14px">Linh Trang Bông</div>
+    <div>
+      <span class="stat-pill" id="stat-streak">🔥 3 ngày</span>
+      <span class="stat-pill" id="stat-coins">🪙 80</span>
+      <span class="stat-pill" id="stat-xp">⚡ 180 XP</span>
+      <span class="stat-pill" id="stat-level">🎯 A2</span>
+    </div>
+  </div>
+  <div class="content">
+    <div id="speak-banner" onclick="showTab('speak')" style="background:#B5624A;border-radius:20px;padding:16px;color:white;margin-bottom:14px;display:flex;align-items:center;gap:12px;cursor:pointer">
+      <div style="width:48px;height:48px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🎙️</div>
+      <div style="flex:1"><div style="font-weight:900;font-size:15px;margin-bottom:2px">Luyện nói 15 phút</div><div style="font-size:12px;opacity:0.85">Chưa làm hôm nay · Streak nguy hiểm 🔥</div></div>
+      <div style="background:white;color:#B5624A;border-radius:14px;padding:7px 14px;font-size:12px;font-weight:900;flex-shrink:0">Bắt đầu</div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="font-weight:800;color:#5C7A5C;font-size:13px" id="home-level-label">⭐ A2</span>
+        <span style="font-size:12px;color:#7A7060;font-weight:600" id="home-xp-label">180/500 XP</span>
+      </div>
+      <div class="xp-bar"><div class="xp-fill" id="home-xp-bar" style="width:36%"></div></div>
+    </div>
+    <div style="background:#F5EDD0;border-radius:18px;padding:14px;margin-bottom:14px;border:1px solid rgba(196,160,64,0.3)" id="grammar-tip-card">
+      <div style="font-size:11px;font-weight:800;color:#C4A040;letter-spacing:1px;margin-bottom:6px">NGỮ PHÁP HÔM NAY</div>
+      <div style="font-weight:900;font-size:14px;color:#2C2416;margin-bottom:4px" id="grammar-rule"></div>
+      <div style="font-size:12px;color:#7A7060;line-height:1.6;font-weight:600" id="grammar-tip"></div>
+      <div style="font-size:12px;color:#2C2416;margin-top:8px;background:white;border-radius:10px;padding:8px 12px;font-weight:700;white-space:pre-line" id="grammar-ex"></div>
+    </div>
+    <div style="font-weight:900;font-size:15px;color:#2C2416;margin-bottom:10px">Hôm nay</div>
+    <div class="card" style="display:flex;align-items:center;gap:12px" id="task-speak">
+      <div style="width:36px;height:36px;background:#F0EAD8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎙️</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:14px;color:#2C2416">Luyện nói 15 phút</div><div style="font-size:11px;color:#C4A040;font-weight:700;margin-top:1px">+20 🪙</div></div>
+    </div>
+    <div class="card" style="display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;background:#F0EAD8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📚</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:14px;color:#2C2416">Học 10 từ mới</div><div style="font-size:11px;color:#C4A040;font-weight:700;margin-top:1px">+10 🪙</div></div>
+    </div>
+    <div class="card" style="display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;background:#F0EAD8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🐱</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:14px;color:#2C2416">Chat AI Tutor</div><div style="font-size:11px;color:#C4A040;font-weight:700;margin-top:1px">+15 🪙</div></div>
+    </div>
+  </div>
+  <div class="bottom-nav" id="nav-home">
+    <div class="nav-item active" onclick="showTab('home')"><span class="nav-icon">🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="showTab('vocab')"><span class="nav-icon">📚</span><span>Từ vựng</span></div>
+    <div class="nav-item" onclick="showTab('speak')"><span class="nav-icon">🎙️</span><span>Luyện nói</span></div>
+    <div class="nav-item" onclick="showTab('tutor')"><span class="nav-icon">🐱</span><span>AI Tutor</span></div>
+    <div class="nav-item" onclick="showTab('progress')"><span class="nav-icon">📈</span><span>Tiến độ</span></div>
+  </div>
+</div>
+
+<!-- VOCAB -->
+<div id="vocab" class="screen" style="display:none">
+  <div class="header purple">
+    <div style="position:absolute;bottom:-8px;right:16px" id="vocab-cat"></div>
+    <div class="header-label">TỪ VỰNG</div>
+    <div class="header" style="padding:0;background:transparent"><h1>Học theo ngữ cảnh</h1></div>
+    <div id="vocab-stats" style="font-size:12px;opacity:0.8;margin-top:2px">✓ 0 đã nhớ</div>
+  </div>
+  <div class="chips" id="vocab-chips"></div>
+  <div class="content">
+    <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+      <span style="font-size:12px;font-weight:700;color:#7A7060" id="card-counter">Thẻ 1/12</span>
+      <span style="font-size:12px;font-weight:700;color:#5C7A5C" id="known-count">✓ 0 đã nhớ</span>
+    </div>
+    <div class="flashcard" onclick="flipCard()" id="flashcard">
+      <div style="font-size:28px;font-weight:900;color:#2C2416;margin-bottom:4px" id="fc-word"></div>
+      <div style="font-size:13px;color:#6A5A8A;margin-bottom:8px;font-weight:700" id="fc-ph"></div>
+      <div style="background:#EDE8F5;color:#6A5A8A;border-radius:10px;padding:2px 10px;font-size:11px;font-weight:700;margin-bottom:12px" id="fc-type"></div>
+      <div id="fc-back" style="display:none">
+        <div style="font-size:18px;font-weight:900;color:#2C2416;margin-bottom:6px" id="fc-vn"></div>
+        <div style="font-size:13px;color:#7A7060;font-style:italic;line-height:1.5" id="fc-ex"></div>
+      </div>
+      <div id="fc-hint" style="font-size:13px;color:#D8D0C0;font-weight:600">👆 Bấm để xem nghĩa</div>
+    </div>
+    <div id="fc-btns" style="display:none;grid-template-columns:1fr 1fr;gap:10px">
+      <button onclick="nextCard(false)" style="background:#F0E0D8;color:#B5624A;border:1.5px solid rgba(181,98,74,0.4);border-radius:16px;padding:14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer">😅 Chưa nhớ</button>
+      <button onclick="nextCard(true)" style="background:#E4EDE4;color:#5C7A5C;border:1.5px solid rgba(92,122,92,0.4);border-radius:16px;padding:14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer">✅ Nhớ! +2🪙</button>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showTab('home')"><span class="nav-icon">🏠</span><span>Home</span></div>
+    <div class="nav-item active" onclick="showTab('vocab')"><span class="nav-icon">📚</span><span>Từ vựng</span></div>
+    <div class="nav-item" onclick="showTab('speak')"><span class="nav-icon">🎙️</span><span>Luyện nói</span></div>
+    <div class="nav-item" onclick="showTab('tutor')"><span class="nav-icon">🐱</span><span>AI Tutor</span></div>
+    <div class="nav-item" onclick="showTab('progress')"><span class="nav-icon">📈</span><span>Tiến độ</span></div>
+  </div>
+</div>
+
+<!-- SPEAK -->
+<div id="speak" class="screen" style="display:none">
+  <div class="header terra">
+    <div class="header-label">LUYỆN NÓI HÀNG NGÀY</div>
+    <h1 id="speak-title">Chọn nhân vật nhập vai</h1>
+  </div>
+  <div class="content" id="speak-pick">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px" id="char-grid"></div>
+    <button class="btn btn-terra" id="speak-start-btn" onclick="startSpeak()">Bắt đầu luyện nói! 🎙️</button>
+    <div style="text-align:center;font-size:11px;color:#7A7060;margin-top:8px">+20 🪙 khi hoàn thành 15 phút</div>
+  </div>
+  <div class="content" id="speak-session" style="display:none">
+    <div style="text-align:center;margin-bottom:16px" id="session-cat"></div>
+    <div class="card" style="text-align:center;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:800;color:#B5624A;letter-spacing:1px;margin-bottom:8px">CÂU CẦN NÓI</div>
+      <div style="font-size:16px;font-weight:900;color:#2C2416;line-height:1.4;margin-bottom:6px" id="sent-en"></div>
+      <div style="font-size:13px;color:#7A7060" id="sent-vi"></div>
+    </div>
+    <div id="transcript-box" style="display:none;border-radius:16px;padding:14px;margin-bottom:14px"></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+      <button class="mic-btn" id="mic-btn" onclick="startListen()" style="background:#B5624A;box-shadow:0 8px 24px rgba(181,98,74,0.4)">🎤</button>
+      <div style="font-size:12px;color:#7A7060;font-weight:600" id="mic-label">Nhấn để nói</div>
+      <div style="font-size:12px;color:#7A7060;font-weight:700;background:white;border-radius:16px;padding:6px 16px" id="timer-display">15:00</div>
+      <button onclick="finishSpeak()" style="background:white;color:#2C2416;border:1px solid #D8D0C0;border-radius:14px;padding:9px 20px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Kết thúc sớm</button>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showTab('home')"><span class="nav-icon">🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="showTab('vocab')"><span class="nav-icon">📚</span><span>Từ vựng</span></div>
+    <div class="nav-item active" onclick="showTab('speak')"><span class="nav-icon">🎙️</span><span>Luyện nói</span></div>
+    <div class="nav-item" onclick="showTab('tutor')"><span class="nav-icon">🐱</span><span>AI Tutor</span></div>
+    <div class="nav-item" onclick="showTab('progress')"><span class="nav-icon">📈</span><span>Tiến độ</span></div>
+  </div>
+</div>
+
+<!-- TUTOR -->
+<div id="tutor" class="screen" style="display:none;flex-direction:column">
+  <div class="header blue" style="padding-bottom:14px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="flex:1">
+        <div class="header-label">AI TUTOR</div>
+        <h1 id="tutor-title" style="font-size:18px">Miu · AI Tutor</h1>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="tts-btn" onclick="toggleTTS()" style="background:rgba(255,255,255,0.15);border:none;border-radius:12px;padding:5px 10px;color:white;font-size:12px;font-weight:700;cursor:pointer">🔇</button>
+        <div onclick="toggleCharPicker()" style="cursor:pointer" id="tutor-cat-header"></div>
+      </div>
+    </div>
+  </div>
+  <div id="char-picker" style="display:none;background:#F5F1E8;border-bottom:1px solid #D8D0C0;padding:12px 14px">
+    <div style="font-size:11px;font-weight:800;color:#7A7060;margin-bottom:10px">CHỌN NHÂN VẬT</div>
+    <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px" id="char-picker-list"></div>
+  </div>
+  <div id="grammar-banner" style="display:none;background:#F5EDD0;border-left:3px solid #C4A040;padding:8px 14px;display:flex;justify-content:space-between;align-items:center">
+    <div style="font-size:12px;font-weight:700;color:#2C2416;flex:1" id="grammar-banner-text"></div>
+    <div onclick="document.getElementById('grammar-banner').style.display='none'" style="font-size:20px;cursor:pointer;color:#7A7060;padding-left:8px">×</div>
+  </div>
+  <div id="chat-messages" style="flex:1;overflow-y:auto;padding:14px 14px 140px"></div>
+  <div class="chat-input-bar">
+    <input class="chat-input" id="chat-input" placeholder="Gõ tiếng Anh vào đây..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="send-btn" onclick="sendMsg()">➤</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showTab('home')"><span class="nav-icon">🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="showTab('vocab')"><span class="nav-icon">📚</span><span>Từ vựng</span></div>
+    <div class="nav-item" onclick="showTab('speak')"><span class="nav-icon">🎙️</span><span>Luyện nói</span></div>
+    <div class="nav-item active" onclick="showTab('tutor')"><span class="nav-icon">🐱</span><span>AI Tutor</span></div>
+    <div class="nav-item" onclick="showTab('progress')"><span class="nav-icon">📈</span><span>Tiến độ</span></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div id="progress" class="screen" style="display:none">
+  <div class="header green">
+    <div style="position:absolute;bottom:-8px;right:16px" id="progress-cat"></div>
+    <div class="header-label">TIẾN ĐỘ</div>
+    <h1>Của Linh Trang Bông</h1>
+  </div>
+  <div class="content">
+    <div style="background:#F5EDD0;border-radius:20px;padding:18px;text-align:center;margin-bottom:14px;border:1px solid rgba(196,160,64,0.3)">
+      <div style="font-size:36px">🪙</div>
+      <div style="font-size:40px;font-weight:900;color:#2C2416" id="p-coins">80</div>
+      <div style="font-size:13px;color:#7A7060;font-weight:700">Tổng coin tích lũy</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div class="card" style="text-align:center"><div style="font-weight:900;font-size:20px;color:#B5624A" id="p-streak">3 ngày 🔥</div><div style="font-size:12px;color:#7A7060;font-weight:700">Streak</div></div>
+      <div class="card" style="text-align:center"><div style="font-weight:900;font-size:20px;color:#6A5A8A" id="p-xp">180 ⚡</div><div style="font-size:12px;color:#7A7060;font-weight:700">Tổng XP</div></div>
+      <div class="card" style="text-align:center"><div style="font-weight:900;font-size:20px;color:#4A6880" id="p-words">8 📚</div><div style="font-size:12px;color:#7A7060;font-weight:700">Từ đã học</div></div>
+      <div class="card" style="text-align:center"><div style="font-weight:900;font-size:20px;color:#5C7A5C" id="p-level">A2</div><div style="font-size:12px;color:#7A7060;font-weight:700">Trình độ</div></div>
+    </div>
+    <div style="font-weight:900;font-size:15px;color:#2C2416;margin-bottom:10px">🐱 Nhân vật của Trang</div>
+    <div class="card"><div style="display:flex;gap:16px;overflow-x:auto;padding-bottom:4px" id="p-chars"></div></div>
+    <div style="font-weight:900;font-size:15px;color:#2C2416;margin-bottom:10px;margin-top:14px">🏅 Huy hiệu</div>
+    <div class="badge-grid" id="p-badges"></div>
+    <div style="font-weight:900;font-size:15px;color:#2C2416;margin-bottom:10px;margin-top:14px">🗺️ Lộ trình CEFR</div>
+    <div class="card" id="p-levels"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showTab('home')"><span class="nav-icon">🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="showTab('vocab')"><span class="nav-icon">📚</span><span>Từ vựng</span></div>
+    <div class="nav-item" onclick="showTab('speak')"><span class="nav-icon">🎙️</span><span>Luyện nói</span></div>
+    <div class="nav-item" onclick="showTab('tutor')"><span class="nav-icon">🐱</span><span>AI Tutor</span></div>
+    <div class="nav-item active" onclick="showTab('progress')"><span class="nav-icon">📈</span><span>Tiến độ</span></div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+const API_KEY = '__VITE_API_KEY__'; // Vercel sẽ inject vào đây
+const API = 'https://api.anthropic.com/v1/messages';
+
+// ── STATE ──
+let state = {
+  coins: 80, streak: 3, xp: 180, wordsLearned: 8,
+  level: null, speakDone: false,
+  unlocked: ['miu','boc'],
+  currentChar: 'miu',
+  vocabTopic: 'all', vocabIdx: 0, vocabFlipped: false, vocabKnown: [],
+  speakCharId: 'miu', speakTimer: null, speakTimeLeft: 900, sentIdx: 0,
+  chatHistory: [], ttsOn: false, loading: false,
+};
+
+// ── DATA ──
+const CHARS = [
+  {id:'miu',name:'Miu',role:'AI Tutor',emoji:'📖',color:'#B8C9A0',outfit:'#5C7A5C',hold:null,unlocked:true,cost:0,
+   system:`You are Miu, a warm friendly English tutor cat for Linh Trang Bong, a Vietnamese woman working in media. Mix these styles: 1) Give Vietnamese sentence to translate, 2) Free chat, 3) Roleplay, 4) Ask opinion, 5) Correct and extend. Correct grammar gently with ✏️ in Vietnamese. Detect uncertainty and ask clarifying questions naturally. Keep responses 2-4 sentences. Be warm and fun.`},
+  {id:'boc',name:'Bốc',role:'Shipper 🛵',emoji:'🛵',color:'#E8C9A0',outfit:'#B5624A',hold:'📦',unlocked:true,cost:0,
+   system:`You are Boc, a delivery cat. Roleplay delivering packages, asking addresses, dealing with customers in English. Correct with ✏️. Keep it fun.`},
+  {id:'phu',name:'Phú',role:'Tỉ phú 💰',emoji:'💰',color:'#3C3428',outfit:'#C4A040',hold:'☕',unlocked:false,cost:50,
+   system:`You are Phu, a billionaire cat. Roleplay business meetings, investments. Use formal English. Correct with ✏️.`},
+  {id:'boss',name:'Boss',role:'VP 🏢',emoji:'🏢',color:'#9AB0C0',outfit:'#4A6880',hold:'📊',unlocked:false,cost:80,
+   system:`You are Boss, a VP cat. Roleplay office scenarios with Trang who works in media: reports, pitching, managers. Focus on passive voice and modal verbs. Correct with ✏️.`},
+  {id:'priya',name:'Priya',role:'PR Manager 📢',emoji:'📢',color:'#C8A0B8',outfit:'#886078',hold:'📱',unlocked:false,cost:100,
+   system:`You are Priya, a PR manager cat for Trang in media. Roleplay press conferences, crisis management, campaigns. Correct with ✏️.`},
+  {id:'vogue',name:'Vogue',role:'Người mẫu 👗',emoji:'👗',color:'#D4A870',outfit:'#6A8EAE',hold:null,unlocked:false,cost:40,
+   system:`You are Vogue, a fashion model cat. Roleplay castings, interviews. Use descriptive vocabulary. Correct with ✏️.`},
+  {id:'gordon',name:'Gordon',role:'Đầu bếp 🍳',emoji:'🍳',color:'#E8D0A0',outfit:'#A07040',hold:'🥄',unlocked:false,cost:60,
+   system:`You are Gordon, a chef cat. Roleplay cooking shows, restaurants. Correct with ✏️.`},
+  {id:'lucky',name:'Lucky',role:'Ăn xin 🙏',emoji:'🙏',color:'#B0A898',outfit:'#7A7060',hold:null,unlocked:false,cost:30,
+   system:`You are Lucky, a street cat. Roleplay emotional storytelling, asking for help. Correct with ✏️.`},
+];
+
+const VOCAB = [
+  {word:'Viral',ph:'/ˈvaɪ.rəl/',type:'adj',vn:'Lan truyền mạnh',ex:'Her post went viral overnight.',topic:'media'},
+  {word:'Campaign',ph:'/kæmˈpeɪn/',type:'noun',vn:'Chiến dịch',ex:'The campaign was a success.',topic:'media'},
+  {word:'Engagement',ph:'/ɪnˈɡeɪdʒ.mənt/',type:'noun',vn:'Mức tương tác',ex:'Our engagement rate hit 40%.',topic:'media'},
+  {word:'Authentic',ph:'/ɔːˈθen.tɪk/',type:'adj',vn:'Chân thực',ex:'Authentic content performs better.',topic:'media'},
+  {word:'Negotiate',ph:'/nɪˈɡoʊ.ʃi.eɪt/',type:'verb',vn:'Đàm phán',ex:"Let's negotiate the contract.",topic:'work'},
+  {word:'Collaborate',ph:'/kəˈlæb.ər.eɪt/',type:'verb',vn:'Hợp tác',ex:'We should collaborate on this.',topic:'work'},
+  {word:'Deadline',ph:'/ˈded.laɪn/',type:'noun',vn:'Thời hạn',ex:'We must meet the deadline.',topic:'work'},
+  {word:'Pitch',ph:'/pɪtʃ/',type:'verb',vn:'Thuyết trình ý tưởng',ex:'She pitched the idea to the client.',topic:'media'},
+  {word:'Brief',ph:'/briːf/',type:'noun',vn:'Tóm tắt yêu cầu',ex:'Read the creative brief first.',topic:'media'},
+  {word:'Leverage',ph:'/ˈlev.ər.ɪdʒ/',type:'verb',vn:'Tận dụng lợi thế',ex:'We can leverage social media.',topic:'media'},
+  {word:'Fluent',ph:'/ˈfluː.ənt/',type:'adj',vn:'Lưu loát',ex:'She speaks English fluently.',topic:'general'},
+  {word:'Stakeholder',ph:'/ˈsteɪk.hoʊl.dər/',type:'noun',vn:'Các bên liên quan',ex:'All stakeholders approved.',topic:'work'},
+];
+
+const GRAMMAR = [
+  {rule:'Present Perfect',tip:'Hành động ảnh hưởng đến hiện tại',ex:'I have worked here for 3 years ✓ (vẫn đang)\nI worked here for 3 years ✓ (đã nghỉ)'},
+  {rule:'Passive Voice',tip:'Phổ biến trong văn phòng & truyền thông',ex:'The report was submitted ✓\nWe submitted the report ✓'},
+  {rule:'Modal Verbs',tip:'Should/Must/Need to — mức độ khác nhau',ex:'You should try = gợi ý nhẹ\nYou must do = bắt buộc'},
+  {rule:'Conditionals',tip:'If + present → will',ex:'If we launch now, we will gain market share ✓'},
+  {rule:'Articles a/the',tip:'a/an = lần đầu nhắc, the = đã biết',ex:'I saw a campaign. The campaign went viral ✓'},
+];
+
+const TEST_QS = [
+  {q:"What does 'deadline' mean?",opts:['Thời hạn hoàn thành','Cuộc họp','Kế hoạch','Báo cáo'],ans:0,lv:'A2',type:'Từ vựng'},
+  {q:"Choose: 'She ___ to the meeting yesterday.'",opts:['go','goes','went','going'],ans:2,lv:'A2',type:'Ngữ pháp'},
+  {q:"What does 'authentic content' mean?",opts:['Nội dung bản quyền','Nội dung chân thực','Nội dung viral','Nội dung trả phí'],ans:1,lv:'B1',type:'Từ vựng'},
+  {q:'Most natural business email opening:',opts:['Hey wanna meet?','I would like to schedule a meeting.','Meeting pls!','Lets do meeting ok?'],ans:1,lv:'B1',type:'Giao tiếp'},
+  {q:"Passive voice: 'They submitted the report' →",opts:['The report submitted.','Report was submit.','The report was submitted.','They submitted report.'],ans:2,lv:'B1',type:'Ngữ pháp'},
+  {q:"Read: 'Campaign exceeded KPIs, driven by authentic storytelling.' What drove success?",opts:['Paid ads','Celebrity','Authentic storytelling','Viral memes'],ans:2,lv:'B1',type:'Đọc hiểu'},
+  {q:"Fill: 'We need to ___ our social media strategy.'",opts:['leverage','viral','deadline','pitch'],ans:0,lv:'B1',type:'Từ vựng'},
+  {q:'Which is correct?',opts:['I have seen her yesterday.','I saw her yesterday.','I have saw her.','I did see her.'],ans:1,lv:'B2',type:'Ngữ pháp'},
+  {q:'Most professional way to disagree:',opts:["That's wrong!","I don't think so.",'I see your point, however I\'d suggest considering...','No way.'],ans:2,lv:'B2',type:'Giao tiếp'},
+  {q:"'Stakeholder buy-in' means:",opts:['Mua cổ phần','Sự đồng thuận của các bên','Hợp đồng','Ngân sách'],ans:1,lv:'B2',type:'Từ vựng'},
+];
+
+const SENTS = [
+  {en:"I'd like to schedule a meeting for next Monday.",vi:'Tôi muốn lên lịch họp vào thứ Hai tới.'},
+  {en:'The campaign results exceeded our expectations.',vi:'Kết quả chiến dịch vượt kỳ vọng.'},
+  {en:'Could you please send me the report by Friday?',vi:'Bạn có thể gửi báo cáo trước thứ Sáu không?'},
+  {en:"I'm interested in collaborating on this project.",vi:'Tôi muốn hợp tác trong dự án này.'},
+  {en:'Let me introduce myself. I work in media.',vi:'Để tôi tự giới thiệu. Tôi làm truyền thông.'},
+  {en:'The proposal has been approved by the board.',vi:'Đề xuất đã được hội đồng phê duyệt.'},
+];
+
+// ── CAT RENDERER ──
+function catHTML(color,outfit,emoji,size=1,hold=null){
+  size = parseFloat(size);
+  return `<div class="cat-wrap" style="transform:scale(${size});transform-origin:bottom center;display:inline-block">
+    <div class="cat-body">
+      <div class="cat-ear-l" style="background:${color}"></div>
+      <div class="cat-ear-r" style="background:${color}"></div>
+      <div style="position:absolute;top:-7px;left:11px;width:9px;height:9px;background:#E8A090;border-radius:50%;opacity:0.5"></div>
+      <div style="position:absolute;top:-7px;right:11px;width:9px;height:9px;background:#E8A090;border-radius:50%;opacity:0.5"></div>
+      <div class="cat-main" style="background:${color}">
+        <div class="cat-face" style="background:${color}cc">
+          <div style="position:absolute;top:11px;left:50%;transform:translateX(-50%);display:flex;gap:12px">
+            <div style="width:6px;height:5px;background:#2C2416;border-radius:50% 50% 40% 40%"></div>
+            <div style="width:6px;height:5px;background:#2C2416;border-radius:50% 50% 40% 40%"></div>
+          </div>
+          <div style="position:absolute;top:21px;left:50%;transform:translateX(-50%);width:5px;height:4px;background:#C4857A;border-radius:50%"></div>
+          <div style="position:absolute;top:23px;left:2px;width:14px;height:1px;background:#7A7060;opacity:0.4;border-radius:1px"></div>
+          <div style="position:absolute;top:23px;right:2px;width:14px;height:1px;background:#7A7060;opacity:0.4;border-radius:1px"></div>
+        </div>
+        <div class="cat-outfit" style="background:${outfit}">${emoji}</div>
+      </div>
+      <div class="cat-arm-l" style="background:${color};transform:rotate(12deg);transform-origin:top"></div>
+      <div class="cat-arm-r" style="background:${color};transform:rotate(-12deg);transform-origin:top"></div>
+      ${hold?`<div style="position:absolute;bottom:14px;right:-22px;font-size:16px">${hold}</div>`:''}
+      <div class="cat-leg-l" style="background:${color}"></div>
+      <div class="cat-leg-r" style="background:${color}"></div>
+    </div>
+    <div class="cat-shadow"></div>
+  </div>`;
+}
+
+// ── TOAST ──
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  setTimeout(()=>t.style.display='none',1500);
+}
+
+// ── SCREEN MANAGEMENT ──
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.style.display='none';s.classList.remove('active');});
+  const s=document.getElementById(id);
+  s.style.display='flex';s.style.flexDirection='column';s.classList.add('active');
+}
+
+function showTab(tab){
+  showScreen(tab);
+  if(tab==='home') updateHome();
+  if(tab==='vocab') updateVocab();
+  if(tab==='speak') updateSpeak();
+  if(tab==='tutor') updateTutor();
+  if(tab==='progress') updateProgress();
+}
+
+// ── INIT ──
+window.onload = function(){
+  // Splash → onboard
+  const miu = CHARS[0];
+  document.getElementById('splash-cat').innerHTML = catHTML(miu.color,miu.outfit,miu.emoji,1.4);
+  setTimeout(()=>{ showScreen('onboard'); initOnboard(); }, 1600);
+};
+
+function initOnboard(){
+  const el=document.getElementById('onboard-cats');
+  el.innerHTML=[{c:'#B8C9A0',o:'#5C7A5C',e:'📖'},{c:'#E8C9A0',o:'#B5624A',e:'🛵'},{c:'#9AB0C0',o:'#4A6880',e:'🏢'}]
+    .map(ch=>catHTML(ch.c,ch.o,ch.e,0.75)).join('');
+}
+
+// ── TEST ──
+let testCur=0, testScore=0, testSel=null;
+
+function showScreen_test(){
+  testCur=0;testScore=0;testSel=null;
+  showScreen('test');
+  renderTestQ();
+}
+
+function renderTestQ(){
+  const q=TEST_QS[testCur];
+  document.getElementById('test-type').textContent=`${q.type} · ${q.lv}`;
+  document.getElementById('test-counter').textContent=`${testCur+1}/${TEST_QS.length}`;
+  document.getElementById('test-progress').style.width=`${(testCur/TEST_QS.length)*100}%`;
+  document.getElementById('test-q').textContent=q.q;
+  const opts=document.getElementById('test-opts');
+  opts.innerHTML=q.opts.map((o,i)=>`
+    <div onclick="pickTest(${i})" id="opt-${i}" style="background:white;border:1.5px solid #D8D0C0;border-radius:14px;padding:13px 16px;margin-bottom:10px;cursor:pointer;font-weight:700;font-size:14px;color:#2C2416;transition:all 0.2s">
+      ${String.fromCharCode(65+i)}. ${o}
+    </div>`).join('');
+  testSel=null;
+}
+
+function pickTest(i){
+  if(testSel!==null) return;
+  testSel=i;
+  const q=TEST_QS[testCur];
+  if(i===q.ans) testScore++;
+  document.getElementById(`opt-${q.ans}`).style.cssText+='background:#E4EDE4;border-color:#5C7A5C;color:#5C7A5C;';
+  if(i!==q.ans) document.getElementById(`opt-${i}`).style.cssText+='background:#F0E0D8;border-color:#B5624A;color:#B5624A;';
+  setTimeout(()=>{
+    if(testCur<TEST_QS.length-1){testCur++;renderTestQ();}
+    else showTestResult();
+  },700);
+}
+
+function showTestResult(){
+  const lv=testScore<=2?'A2':testScore<=4?'B1':testScore<=7?'B1+':'B2';
+  showScreen('test-result');
+  document.getElementById('result-cat').innerHTML=catHTML('#B8C9A0','#5C7A5C','🎉',1.2);
+  document.getElementById('result-score').textContent=`${testScore}/${TEST_QS.length}`;
+  document.getElementById('result-level').textContent=lv;
+  const msgs={A2:'Nền tốt rồi! Miu sẽ xây từ vựng thật chắc cho Trang! 🌿',B1:'Trình độ tốt! Luyện giao tiếp nhiều hơn là lên B2! 💪','B1+':'Gần B2 rồi! Cần thêm vocabulary chuyên ngành media! ⭐',B2:'Giỏi lắm! Tập trung vào fluency & professional English! 🏆'};
+  document.getElementById('result-msg').textContent=msgs[lv]||msgs['B1'];
+  state.level=lv;
+}
+
+function finishTest(){
+  showTab('home');
+}
+
+// ── HOME ──
+function updateHome(){
+  document.getElementById('stat-streak').textContent=`🔥 ${state.streak} ngày`;
+  document.getElementById('stat-coins').textContent=`🪙 ${state.coins}`;
+  document.getElementById('stat-xp').textContent=`⚡ ${state.xp} XP`;
+  document.getElementById('stat-level').textContent=`🎯 ${state.level||'A2'}`;
+  document.getElementById('home-level-label').textContent=`⭐ ${state.level||'A2'}`;
+  document.getElementById('home-xp-label').textContent=`${state.xp}/500 XP`;
+  document.getElementById('home-xp-bar').style.width=`${Math.min((state.xp/500)*100,100)}%`;
+  document.getElementById('home-cat').innerHTML=catHTML('#B8C9A0','#5C7A5C','✋',0.65);
+  const g=GRAMMAR[new Date().getDay()%GRAMMAR.length];
+  document.getElementById('grammar-rule').textContent=g.rule;
+  document.getElementById('grammar-tip').textContent=g.tip;
+  document.getElementById('grammar-ex').textContent=g.ex;
+  if(state.speakDone){
+    document.getElementById('speak-banner').innerHTML=`<span style="font-size:28px">✅</span><div><div style="font-weight:800;font-size:14px;color:#5C7A5C">Luyện nói xong rồi!</div><div style="font-size:12px;color:#5C7A5C;opacity:0.8">+20 🪙 đã cộng vào</div></div>`;
+    document.getElementById('speak-banner').style.background='#E4EDE4';
+    document.getElementById('speak-banner').style.cursor='default';
+  }
+}
+
+// ── VOCAB ──
+const VOCAB_TOPICS=[{id:'all',label:'Tất cả'},{id:'media',label:'📢 Media'},{id:'work',label:'💼 Công việc'},{id:'travel',label:'✈️ Du lịch'},{id:'general',label:'💬 Giao tiếp'}];
+
+function updateVocab(){
+  document.getElementById('vocab-cat').innerHTML=catHTML('#C8A0B8','#6A5A8A','📖',0.65);
+  const chips=document.getElementById('vocab-chips');
+  chips.innerHTML=VOCAB_TOPICS.map(t=>`<div class="chip${state.vocabTopic===t.id?' active':''}" onclick="setVocabTopic('${t.id}')">${t.label}</div>`).join('');
+  renderCard();
+}
+
+function setVocabTopic(t){
+  state.vocabTopic=t;state.vocabIdx=0;state.vocabFlipped=false;updateVocab();
+}
+
+function getFiltered(){
+  return state.vocabTopic==='all'?VOCAB:VOCAB.filter(v=>v.topic===state.vocabTopic);
+}
+
+function renderCard(){
+  const filtered=getFiltered();
+  const card=filtered[state.vocabIdx%filtered.length];
+  document.getElementById('card-counter').textContent=`Thẻ ${(state.vocabIdx%filtered.length)+1}/${filtered.length}`;
+  document.getElementById('known-count').textContent=`✓ ${state.vocabKnown.length} đã nhớ`;
+  document.getElementById('vocab-stats').textContent=`✓ ${state.vocabKnown.length} đã nhớ`;
+  document.getElementById('fc-word').textContent=card.word;
+  document.getElementById('fc-ph').textContent=card.ph;
+  document.getElementById('fc-type').textContent=card.type;
+  document.getElementById('fc-vn').textContent=card.vn;
+  document.getElementById('fc-ex').textContent=`"${card.ex}"`;
+  document.getElementById('fc-back').style.display=state.vocabFlipped?'block':'none';
+  document.getElementById('fc-hint').style.display=state.vocabFlipped?'none':'block';
+  document.getElementById('fc-btns').style.display=state.vocabFlipped?'grid':'none';
+}
+
+function flipCard(){
+  state.vocabFlipped=!state.vocabFlipped;renderCard();
+}
+
+function nextCard(known){
+  const filtered=getFiltered();
+  const card=filtered[state.vocabIdx%filtered.length];
+  if(known&&!state.vocabKnown.includes(card.word)){
+    state.vocabKnown.push(card.word);
+    state.coins+=2;state.xp+=5;state.wordsLearned++;
+    showToast('+2 🪙 Nhớ rồi!');
+  }
+  state.vocabFlipped=false;
+  state.vocabIdx++;
+  setTimeout(renderCard,80);
+}
+
+// ── SPEAK ──
+function updateSpeak(){
+  const el=document.getElementById('char-grid');
+  const chars=CHARS.map(c=>({...c,unlocked:state.unlocked.includes(c.id)}));
+  el.innerHTML=chars.filter(c=>c.unlocked).map(c=>`
+    <div onclick="selectSpeakChar('${c.id}')" style="background:${state.speakCharId===c.id?'#E4EDE4':'white'};border:1.5px solid ${state.speakCharId===c.id?'#5C7A5C':'#D8D0C0'};border-radius:20px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer">
+      ${catHTML(c.color,c.outfit,c.emoji,0.7,c.hold)}
+      <div style="font-weight:800;font-size:13px;color:${state.speakCharId===c.id?'#5C7A5C':'#2C2416'}">${c.name}</div>
+      <div style="font-size:10px;color:#7A7060;text-align:center">${c.role}</div>
+    </div>`).join('');
+  const char=CHARS.find(c=>c.id===state.speakCharId)||CHARS[0];
+  document.getElementById('speak-start-btn').textContent=`Bắt đầu với ${char.name}! 🎙️`;
+}
+
+function selectSpeakChar(id){state.speakCharId=id;updateSpeak();}
+
+function startSpeak(){
+  document.getElementById('speak-pick').style.display='none';
+  document.getElementById('speak-session').style.display='block';
+  const char=CHARS.find(c=>c.id===state.speakCharId)||CHARS[0];
+  document.getElementById('session-cat').innerHTML=catHTML(char.color,char.outfit,char.emoji,0.9,char.hold);
+  state.speakTimeLeft=900;
+  renderSent();
+  state.speakTimer=setInterval(()=>{
+    state.speakTimeLeft--;
+    const m=String(Math.floor(state.speakTimeLeft/60)).padStart(2,'0');
+    const s=String(state.speakTimeLeft%60).padStart(2,'0');
+    document.getElementById('timer-display').textContent=`${m}:${s}`;
+    if(state.speakTimeLeft<=0){clearInterval(state.speakTimer);finishSpeak();}
+  },1000);
+}
+
+function renderSent(){
+  const sent=SENTS[state.sentIdx%SENTS.length];
+  document.getElementById('sent-en').textContent=sent.en;
+  document.getElementById('sent-vi').textContent=sent.vi;
+  document.getElementById('transcript-box').style.display='none';
+}
+
+function startListen(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Cần dùng Chrome để luyện nói nhé Trang!');return;}
+  const r=new SR();r.lang='en-US';r.continuous=false;r.interimResults=false;
+  document.getElementById('mic-label').textContent='Đang nghe...';
+  document.getElementById('mic-btn').style.background='#8C3020';
+  r.onresult=e=>{
+    const t=e.results[0][0].transcript;
+    const sent=SENTS[state.sentIdx%SENTS.length];
+    const orig=sent.en.toLowerCase().replace(/[^a-z\s]/g,'').split(' ');
+    const said=t.toLowerCase().replace(/[^a-z\s]/g,'').split(' ');
+    const score=Math.round((orig.filter(w=>said.includes(w)).length/orig.length)*100);
+    const box=document.getElementById('transcript-box');
+    box.style.display='block';
+    box.style.background=score>=60?'#E4EDE4':'#F0E0D8';
+    box.style.border=`1px solid ${score>=60?'#5C7A5C':'#B5624A'}`;
+    box.innerHTML=`<div style="font-size:12px;font-weight:800;color:${score>=60?'#5C7A5C':'#B5624A'};margin-bottom:4px">${score>=60?`✅ Tốt lắm! ${score}%`:`💪 Thử lại! ${score}%`}</div><div style="font-size:13px;color:#2C2416;font-weight:600">"${t}"</div>${score>=60?`<div style="font-size:11px;color:#5C7A5C;font-weight:700;margin-top:4px">+5 🪙</div>`:''}<button onclick="state.sentIdx++;renderSent()" style="margin-top:8px;background:white;border:1px solid #D8D0C0;border-radius:12px;padding:7px 16px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Câu tiếp →</button>`;
+    if(score>=60){state.coins+=5;state.xp+=10;}
+    document.getElementById('mic-label').textContent='Nhấn để nói';
+    document.getElementById('mic-btn').style.background='#B5624A';
+  };
+  r.onerror=()=>{document.getElementById('mic-label').textContent='Nhấn để nói';document.getElementById('mic-btn').style.background='#B5624A';};
+  r.onend=()=>{document.getElementById('mic-label').textContent='Nhấn để nói';document.getElementById('mic-btn').style.background='#B5624A';};
+  r.start();
+}
+
+function finishSpeak(){
+  clearInterval(state.speakTimer);
+  state.speakDone=true;state.coins+=20;state.xp+=50;
+  document.getElementById('speak-pick').style.display='block';
+  document.getElementById('speak-session').style.display='none';
+  showToast('🎉 +20 🪙 Luyện nói xong!');
+  showTab('home');
+}
+
+// ── TUTOR ──
+function updateTutor(){
+  const char=CHARS.find(c=>c.id===state.currentChar)||CHARS[0];
+  document.getElementById('tutor-title').textContent=`${char.name} · ${char.role}`;
+  document.getElementById('tutor-cat-header').innerHTML=catHTML(char.color,char.outfit,char.emoji,0.55);
+  renderCharPicker();
+  if(document.getElementById('chat-messages').children.length===0){
+    addMsg('ai',`Chào Trang! 🌿 Tớ là ${char.name}. Hôm nay học kiểu gì? Tớ sẽ đưa câu dịch, chat tự do, hay nhập vai nhé!`);
+  }
+}
+
+function renderCharPicker(){
+  const chars=CHARS.map(c=>({...c,unlocked:state.unlocked.includes(c.id)}));
+  document.getElementById('char-picker-list').innerHTML=chars.map(c=>`
+    <div onclick="${c.unlocked?`switchChar('${c.id}')`:'null'}" style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:${c.unlocked?'pointer':'default'};opacity:${c.unlocked?1:0.4};flex-shrink:0">
+      ${catHTML(c.color,c.outfit,c.emoji,0.6)}
+      <div style="font-size:10px;font-weight:800;color:${c.id===state.currentChar?'#4A6880':'#7A7060'}">${c.name}</div>
+      ${!c.unlocked?`<div style="font-size:9px;color:#C4A040;font-weight:700">🔒${c.cost}🪙</div>`:''}
+    </div>`).join('');
+}
+
+function switchChar(id){
+  state.currentChar=id;state.chatHistory=[];
+  document.getElementById('chat-messages').innerHTML='';
+  document.getElementById('char-picker').style.display='none';
+  const char=CHARS.find(c=>c.id===id);
+  document.getElementById('tutor-title').textContent=`${char.name} · ${char.role}`;
+  document.getElementById('tutor-cat-header').innerHTML=catHTML(char.color,char.outfit,char.emoji,0.55);
+  addMsg('ai',`Tớ là ${char.name} — ${char.role}! Bắt đầu nhé? 🌿`);
+}
+
+function toggleCharPicker(){
+  const el=document.getElementById('char-picker');
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+
+function toggleTTS(){
+  state.ttsOn=!state.ttsOn;
+  document.getElementById('tts-btn').textContent=state.ttsOn?'🔊':'🔇';
+  if(state.ttsOn) window.speechSynthesis?.getVoices();
+}
+
+function addMsg(role,text){
+  const el=document.getElementById('chat-messages');
+  const char=CHARS.find(c=>c.id===state.currentChar)||CHARS[0];
+  if(role==='ai'){
+    const lines=text.split('\n').map(l=>l.startsWith('✏️')?`<div class="correction">${l}</div>`:`<span>${l}</span><br>`).join('');
+    el.innerHTML+=`<div style="display:flex;align-items:flex-end;gap:6px;margin-bottom:10px">
+      <div style="transform:scale(0.42);transform-origin:bottom left;margin-bottom:-26px;margin-left:-10px">${catHTML(char.color,char.outfit,char.emoji,1)}</div>
+      <div class="msg-ai">${lines}</div></div>`;
+    if(state.ttsOn){
+      const clean=text.replace(/✏️[^\n]*/g,'');
+      const utt=new SpeechSynthesisUtterance(clean);
+      utt.lang='en-US';utt.rate=0.95;
+      const v=window.speechSynthesis?.getVoices().find(v=>v.lang.startsWith('en'));
+      if(v)utt.voice=v;
+      window.speechSynthesis?.speak(utt);
+    }
+  } else {
+    el.innerHTML+=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><div class="msg-user">${text}</div></div>`;
+  }
+  el.scrollTop=el.scrollHeight;
+}
+
+function addLoading(){
+  const el=document.getElementById('chat-messages');
+  const char=CHARS.find(c=>c.id===state.currentChar)||CHARS[0];
+  el.innerHTML+=`<div id="loading-msg" style="display:flex;align-items:flex-end;gap:6px;margin-bottom:10px">
+    <div style="transform:scale(0.42);transform-origin:bottom left;margin-bottom:-26px;margin-left:-10px">${catHTML(char.color,char.outfit,char.emoji,1)}</div>
+    <div class="msg-ai"><div class="dots"><span></span><span></span><span></span></div></div></div>`;
+  el.scrollTop=el.scrollHeight;
+}
+
+function removeLoading(){
+  document.getElementById('loading-msg')?.remove();
+}
+
+function detectUncertain(text){
+  return /(\.\.\.|i think|maybe|i guess|\blike\b|\bum\b|\buh\b|kind of|sort of)/i.test(text)||/\?$/.test(text.trim());
+}
+
+async function sendMsg(){
+  const input=document.getElementById('chat-input');
+  const text=input.value.trim();
+  if(!text||state.loading) return;
+  input.value='';
+  addMsg('user',text);
+  state.chatHistory.push({role:'user',content:text});
+  state.loading=true;
+  addLoading();
+  const char=CHARS.find(c=>c.id===state.currentChar)||CHARS[0];
+  const uncertain=detectUncertain(text);
+  try{
+    const res=await fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:1000,
+        system:char.system+(uncertain?'\n\nIMPORTANT: User seems uncertain. Naturally ask a clarifying question woven into your response.':''),
+        messages:state.chatHistory,
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'Ối lỗi rồi! Thử lại nhé 🌿';
+    state.chatHistory.push({role:'assistant',content:reply});
+    removeLoading();addMsg('ai',reply);
+    const correction=reply.split('\n').find(l=>l.startsWith('✏️'));
+    if(correction){
+      const b=document.getElementById('grammar-banner');
+      document.getElementById('grammar-banner-text').textContent=correction;
+      b.style.display='flex';
+    }
+    state.coins+=3;
+  }catch(e){
+    removeLoading();addMsg('ai','Lỗi kết nối Trang ơi 😅 Thử lại nhé!');
+  }
+  state.loading=false;
+}
+
+// ── PROGRESS ──
+function updateProgress(){
+  document.getElementById('progress-cat').innerHTML=catHTML('#B8C9A0','#5C7A5C','📈',0.65);
+  document.getElementById('p-coins').textContent=state.coins;
+  document.getElementById('p-streak').textContent=`${state.streak} ngày 🔥`;
+  document.getElementById('p-xp').textContent=`${state.xp} ⚡`;
+  document.getElementById('p-words').textContent=`${state.wordsLearned} 📚`;
+  document.getElementById('p-level').textContent=state.level||'A2';
+  const chars=CHARS.map(c=>({...c,unlocked:state.unlocked.includes(c.id)}));
+  document.getElementById('p-chars').innerHTML=chars.map(c=>`
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;opacity:${c.unlocked?1:0.35}">
+      ${catHTML(c.color,c.outfit,c.unlocked?c.emoji:'🔒',0.6)}
+      <div style="font-size:10px;font-weight:800;color:${c.unlocked?'#2C2416':'#7A7060'}">${c.name}</div>
+      ${!c.unlocked?`<div style="font-size:9px;color:#C4A040;font-weight:700">${c.cost}🪙</div>`:''}
+    </div>`).join('');
+  const levels=['A1','A2','B1','B1+','B2','C1'];
+  const curIdx=levels.indexOf(state.level||'A2');
+  const badges=[
+    {e:'🔥',name:'Streak 3 ngày',done:state.streak>=3},
+    {e:'📚',name:'Học 10 từ',done:state.wordsLearned>=10},
+    {e:'🐱',name:'Chat AI',done:true},
+    {e:'🎙️',name:'Luyện nói',done:state.speakDone},
+    {e:'🏆',name:'Xong test',done:!!state.level},
+    {e:'⭐',name:'Đạt B1',done:curIdx>=2},
+  ];
+  document.getElementById('p-badges').innerHTML=badges.map(b=>`
+    <div class="badge${b.done?' done':''}">
+      <div style="font-size:26px;margin-bottom:4px">${b.e}</div>
+      <div style="font-size:10px;font-weight:700;color:${b.done?'#2C2416':'#7A7060'};line-height:1.3">${b.name}</div>
+      ${b.done?'<div style="font-size:9px;color:#5C7A5C;font-weight:800;margin-top:3px">✓ Đạt</div>':''}
+    </div>`).join('');
+  document.getElementById('p-levels').innerHTML=levels.map((lv,i)=>`
+    <div class="level-row" style="margin-bottom:${i<levels.length-1?12:0}px">
+      <div class="level-dot" style="background:${i<curIdx?'#5C7A5C':i===curIdx?'#B5624A':'#D8D0C0'};color:${i<=curIdx?'white':'#7A7060'}">${i<curIdx?'✓':lv}</div>
+      <div style="flex:1;height:3px;background:${i<curIdx?'#5C7A5C':'#D8D0C0'};border-radius:3px"></div>
+      <div style="font-size:11px;font-weight:700;color:${i===curIdx?'#B5624A':i<curIdx?'#7A7060':'#D8D0C0'};width:90px;text-align:right">${i===curIdx?'← Trang đây':i<curIdx?'Đã qua ✓':'🔒 Chưa mở'}</div>
+    </div>`).join('');
+}
+
+// Start test when clicking button on onboard
+document.getElementById('onboard').querySelector('button').onclick=()=>showScreen_test();
+</script>
+</body>
+</html>
